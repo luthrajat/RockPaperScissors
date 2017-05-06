@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>RPC</title>
+  <style media="screen">
+    table {
+      border-collapse: collapse;
+    }
+    td, th {
+      border: 1px solid;
+      text-align: center;
+    }
+  </style>
+  <script type="text/javascript">
+
+        /** Initilize variables to be used for the Game **/
+        var myGameOptions = ["paper", "rock", "scissors"];
+        var myScore = 0;
+        var compScore = 0;
+        var draw = 0;
+
+        /** Helper function to return Random Number between min and max **/
+        function getRandomInt(min, max) {
+          return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        /** This method will be called by Key Press or Button Press event **/
+        function playGame(mySelection) {
+
+            /** Get the Game Array Option Value using Random Number between 0~2 **/
+            var compRandomSelection = myGameOptions[getRandomInt(0,2)];
+
+            /** Get First Char from the compRandomSelection as mySelction only has single char **/
+            var compSelection = compRandomSelection.charAt(0);
+
+            /**  Temp score we will use it later for calculation **/
+            var tmpMyScore = myScore;
+            var tmpCScore = compScore;
+            var tmpDScore = draw;
+
+            /** Actual Game logic **/
+            if (mySelection  === compSelection) {
+              draw++;
+            } else if (mySelection=='r') {
+                if (compSelection=='p') compScore++;
+                if (compSelection=='s')  myScore++;
+            } else if (mySelection=='p') {
+              if (compSelection=='r') myScore++;
+              if (compSelection=='s') compScore++;
+            } else if (mySelection=='s') {
+              if (compSelection=='p') myScore++;
+              if (compSelection=='r') compScore++;
+            }
+            /** Helper Functions for Display On Screen **/
+            updateSelectionsOnScreen(mySelection, compSelection);
+            updateScoreOnScreen(myScore, compScore, draw);
+            updateScoreBoardOnScreen(myScore, compScore, draw, tmpMyScore, tmpCScore, tmpDScore);
+        }
+
+        /** Update Span to Show My and Computer selection **/
+        function updateSelectionsOnScreen(mySelection, compSelection) {
+          document.getElementById('myCurrentSelection').textContent = mySelection;
+          document.getElementById('compCurrentSelection').textContent = compSelection;
+        }
+
+        /** Update Span to Show scores **/
+        function updateScoreOnScreen(myScore, compScore, draw) {
+          document.getElementById('ourWin').textContent = myScore;
+          document.getElementById('compWin').textContent = compScore;
+          document.getElementById('draw').textContent = draw;
+        }
+
+        /** Add New Row and Cells to show Game scores **/
+        function updateScoreBoardOnScreen(myScore, compScore, draw, tmpMyScore, tmpCScore, tmpDScore) {
+          var scoreBoardTable  = document.getElementById("scoreBoard");
+
+          /** Using -1 to add row at the end, use 0 if you want to add new row on top. **/
+          var newRow = scoreBoardTable.insertRow(-1);
+
+          /** adding 3 new columns . **/
+          var myCol = newRow.insertCell(0);
+          var coCol = newRow.insertCell(1);
+          var dCol = newRow.insertCell(2);
+
+          /** Adding text to newly added 3 row cells **/
+          myCol.innerHTML = parseInt(myScore) - parseInt(tmpMyScore);
+          coCol.innerHTML = parseInt(compScore) - parseInt(tmpCScore);
+          dCol.innerHTML = parseInt(draw) - parseInt(tmpDScore);
+        }
+
+        /** document.onkeypress is fired when we press key **/
+        document.onkeypress = function(event) {
+          if(event.key=='r' || event.key=='p' || event.key=='s' )
+            playGame(event.key);
+        }
+  </script>
+</head>
+<body>
+      <button type="button" id="option1" onclick="playGame('r');">rock</button>
+      <button type="button" id="option2" onclick="playGame('p');">paper</button>
+      <button type="button" id="option3" onclick="playGame('s');">scissors</button>
+
+      <p>My Selection  : <span id="myCurrentSelection"></span></p>
+      <p>Comp Selection: <span id="compCurrentSelection"></span></p>
+
+      <p>My Score: <span id="ourWin"></span></p>
+      <p>Comp Score: <span id="compWin"></span></p>
+      <p>Draw Score: <span id="draw"></span></p>
+
+      <br/>
+      <table id="scoreBoard" style="border: 1px solid;">
+        <tr>
+          <th>My Score</th>
+          <th>Computer Score</th>
+          <th>Draw</th>
+        </tr>
+      </table>
+
+</body>
+</html>
